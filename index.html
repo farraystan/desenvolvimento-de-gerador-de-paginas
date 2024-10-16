@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Gerador de Páginas HTML</title>
+
+    <style>
+        body {
+            background-color: #69737e;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px; /* Ajuste conforme necessário */
+            margin: 0 auto;
+        }
+
+        .head {
+            text-align: center;
+        }
+
+        .style {
+            text-align: center;
+        }
+
+        .form-container label,
+        .form-container input {
+            margin-bottom: 10px;
+        }
+
+        .form-container input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box; /* Garante que o padding e a borda estejam incluídos na largura total */
+        }
+        .title {
+            text-align: center;
+        }
+        #result {
+            width: 100%;
+            height: 500px; /* Ajuste conforme necessário */
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Gerador de Páginas HTML</h1>
+    <h3 class="head">HEAD</h3>
+    <form class="form-container" id="htmlForm">
+        <label for="lang">Idioma (lang):</label>
+        <input type="text" id="lang" name="lang" value="pt-br"><br><br>
+
+        <label for="charset">Charset:</label>
+        <input type="text" id="charset" name="charset" value="UTF-8"><br><br>
+
+        <label for="name">Nome da Meta Tag:</label>
+        <input type="text" id="name" name="name" value="viewport"><br><br>
+
+        <label for="content">Conteúdo da Meta Tag:</label>
+        <input type="text" id="content" name="content" value="width=device-width, initial-scale=1.0"><br><br>
+
+        <label for="initialScale">Initial Scale:</label>
+        <input type="text" id="initialScale" name="initialScale" value="1.0"><br><br>
+
+        <label for="http-equiv">http-equiv:</label>
+        <input type="text" id="http-equiv" name="http-equiv" value="Content-Type"><br><br>
+
+        <label for="httpContent">Conteúdo HTTP Equiv:</label>
+        <input type="text" id="httpContent" name="httpContent" value="text/html; charset=UTF-8"><br><br>
+
+        <label for="href">href:</label>
+        <input type="text" id="href" name="href" value=""><br><br>
+
+        <label for="rel">rel:</label>
+        <select id="rel" name="rel">
+            <option value=""></option>
+            <option value="author">author</option>
+            <option value="dns-prefetch">dns-prefetch</option>
+            <option value="help">help</option>
+            <option value="icon">icon</option>
+            <option value="license">license</option>
+            <option value="pingback">pingback</option>
+            <option value="preconnect">preconnect</option>
+            <option value="prefetch">prefetch</option>
+            <option value="preload">preload</option>
+            <option value="prerender">prerender</option>
+            <option value="prev">prev</option>
+            <option value="search">search</option>
+            <option value="stylesheet">stylesheet</option>
+        </select><br><br>
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value=""><br><br>
+
+        <label for="fileName">Nome do Arquivo:</label>
+        <input type="text" id="fileName" name="fileName" value=""><br><br>
+
+        <h3 class="style">STYLE</h3>
+
+        <label for="backgroundColor">Escolha a cor de fundo:</label>
+        <input type="color" id="backgroundColor" name="backgroundColor" value="#69737e"><br><br>
+
+        <label for="colorCode">Código da Cor:</label>
+        <input type="text" id="colorCode" name="colorCode" value="#69737e" readonly><br><br>
+
+        <button type="button" onclick="generateHTML()">Gerar HTML</button>
+        <button type="button" onclick="saveFile()">Salvar</button>
+    </form>
+
+    <h2>Resultado:</h2>
+    <iframe id="result"></iframe>
+
+    <script>
+        let generatedHTML = '';
+
+        function generateHTML() {
+            const lang = document.getElementById('lang').value;
+            const charset = document.getElementById('charset').value;
+            const name = document.getElementById('name').value;
+            const content = document.getElementById('content').value;
+            const initialScale = document.getElementById('initialScale').value;
+            const httpEquiv = document.getElementById('http-equiv').value;
+            const httpContent = document.getElementById('httpContent').value;
+            const title = document.getElementById('title').value;
+            const href = document.getElementById('href').value;
+            const rel = document.getElementById('rel').value;
+            const color = document.getElementById('backgroundColor').value;
+
+            // Atualiza o campo de código da cor
+            document.getElementById('colorCode').value = color;
+
+            generatedHTML = `
+<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+    <meta charset="${charset}">
+    <meta name="${name}" content="${content}">
+    <meta name="viewport" content="width=device-width, initial-scale=${initialScale}">
+    <meta http-equiv="${httpEquiv}" content="${httpContent}">
+    <link rel="${rel}" href="${href}">
+    <title>${title}</title>
+
+    <style>
+        body {
+            background-color: ${color};
+        }
+    </style>
+</head>
+<body>
+    
+</body>
+</html>`;
+
+            // Mostrar o HTML gerado no iframe
+            const iframe = document.getElementById('result');
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(generatedHTML);
+            iframe.contentDocument.close();
+        }
+
+        function saveFile() {
+            if (!generatedHTML) {
+                alert('Por favor, gere o HTML primeiro.');
+                return;
+            }
+
+            const fileName = document.getElementById('fileName').value || 'pagina'; // Pega o nome do arquivo ou usa 'pagina' como padrão
+            const blob = new Blob([generatedHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName; // Usa o nome do arquivo fornecido pelo usuário
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

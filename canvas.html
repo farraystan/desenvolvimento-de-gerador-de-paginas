@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Canvas</title>
+</head>
+<body>
+    <h1>Desenhando com Canvas</h1>
+    <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Desenha um retângulo vermelho
+        ctx.fillStyle = '#FF0000';
+        ctx.fillRect(50, 50, 150, 100);
+
+        // Desenha um círculo azul
+        ctx.beginPath();
+        ctx.arc(300, 200, 70, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#0000FF';
+        ctx.stroke();
+        ctx.fillStyle = '#00FFFF';
+        ctx.fill();
+    </script>
+</body>
+</html>

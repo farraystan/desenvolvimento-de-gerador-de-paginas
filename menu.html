@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Contextual com Botão Esquerdo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .menu {
+            position: absolute;
+            display: none;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu li {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .menu li:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu" class="menu">
+        <ul>
+            <li onclick="alert('Opção 1')">Opção 1</li>
+            <li onclick="alert('Opção 2')">Opção 2</li>
+            <li onclick="alert('Opção 3')">Opção 3</li>
+        </ul>
+    </div>
+
+    <script>
+        const menu = document.getElementById('menu');
+
+        document.addEventListener('click', function(event) {
+            // Verifica se o clique foi no menu
+            if (event.target.closest('#menu') || event.target.closest('li')) {
+                return;
+            }
+
+            // Esconde o menu se o clique for fora do menu
+            menu.style.display = 'none';
+        });
+
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault(); // Previne o menu de contexto padrão
+
+            // Posiciona e exibe o menu no local do clique
+            menu.style.left = `${event.pageX}px`;
+            menu.style.top = `${event.pageY}px`;
+            menu.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

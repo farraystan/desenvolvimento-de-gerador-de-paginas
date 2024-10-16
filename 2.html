@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Gerador de Páginas HTML</title>
+
+    <style>
+        body {
+            background-color: #1f1f1f;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+            color: #ddd;
+        }
+
+        .head {
+            text-align: center;
+        }
+
+        .style {
+            text-align: center;
+        }
+
+        .form-container label,
+        .form-container input {
+            margin-bottom: 10px;
+        }
+
+        .form-container input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        #result {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .title {
+            color: #ddd;
+        }
+
+        .head, .a {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Gerador de Páginas HTML</h1>
+    <h3 class="head">HEAD</h3>
+    
+    <form class="form-container" id="htmlForm">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value=""><br><br>
+
+        <label for="fileName">Nome do Arquivo</label>
+        <input type="text" id="fileName" name="fileName" value=""><br><br>
+
+        <h3 class="style">STYLE</h3>
+
+        <label for="backgroundColor">Escolha a cor de fundo</label>
+        <input type="color" id="backgroundColor" name="backgroundColor" value="#69737e"><br><br>
+
+        <label for="colorCode">Código da Cor</label>
+        <input type="text" id="colorCode" name="colorCode" value="#69737e" readonly><br><br>
+
+        <h3 class="style">BODY</h3>
+
+        <label for="bloco">Bloco</label>
+        <input type="text" id="bloco" name="bloco" value=""><br><br>
+
+        <label for="destino">Destino</label>
+        <input type="text" id="destino" name="destino" value=""><br><br>
+
+        <button type="button" onclick="generateHTML()">Gerar HTML</button>
+        <button type="button" onclick="saveFile()">Salvar</button>
+    </form>
+
+    <h2 class="a">Resultado:</h2>
+    <iframe id="result"></iframe>
+
+    <script>
+        let generatedHTML = '';
+
+        function generateHTML() {
+            const title = document.getElementById('title').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            const bloco = document.getElementById('bloco').value;
+            const destino = document.getElementById('destino').value;
+
+            generatedHTML = `
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body {
+            background-color: ${backgroundColor};
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .bloco {
+            background-color: #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .bloco:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="bloco" onclick="window.location.href='${destino}'">
+        ${bloco}
+    </div>
+</body>
+</html>`;
+
+            const iframe = document.getElementById('result');
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(generatedHTML);
+            iframe.contentDocument.close();
+        }
+
+        function saveFile() {
+            if (!generatedHTML) {
+                alert('Por favor, gere o HTML primeiro.');
+                return;
+            }
+
+            const fileName = document.getElementById('fileName').value || 'pagina';
+            const blob = new Blob([generatedHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
