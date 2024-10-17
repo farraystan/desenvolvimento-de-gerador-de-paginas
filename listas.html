@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Gerador de Páginas HTML</title>
+
+    <style>
+        body {
+            background-color: #1f1f1f;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+            color: #ddd;
+        }
+
+        .head {
+            text-align: center;
+        }
+
+        .style {
+            text-align: center;
+        }
+
+        .form-container label,
+        .form-container input {
+            margin-bottom: 10px;
+        }
+
+        .form-container input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .title {
+            text-align: center;
+            color: #ddd;
+        }
+
+        #result {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            background-color: #2c2c2c;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .title {
+            color: #ddd;
+        }
+
+        .head, .a {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Gerador de Páginas HTML</h1>
+    <h3 class="head">HEAD</h3>
+    
+    <form class="form-container" id="htmlForm">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value=""><br><br>
+
+        <label for="fileName">Nome do Arquivo</label>
+        <input type="text" id="fileName" name="fileName" value=""><br><br>
+
+        <h3 class="style">STYLE</h3>
+
+        <label for="backgroundColor">Escolha a cor de fundo</label>
+        <input type="color" id="backgroundColor" name="backgroundColor" value="#121212"><br><br>
+
+        <label for="colorCode">Código da Cor</label>
+        <input type="text" id="colorCode" name="colorCode" value="#121212" readonly><br><br>
+
+        <h3 class="style">BODY</h3>
+
+        <div id="dynamicFields">
+            <label for="bloco1">Bloco 1</label>
+            <input type="text" id="bloco1" name="bloco" value=""><br><br>
+
+            <label for="destino1">Destino 1</label>
+            <input type="text" id="destino1" name="destino" value=""><br><br>
+        </div>
+
+        <button type="button" onclick="addNewDiv()">Adicionar Nova Div</button><br><br>
+
+        <button type="button" onclick="generateHTML()">Gerar HTML</button>
+        <button type="button" onclick="saveFile()">Salvar</button>
+    </form>
+
+    <h2 class="a">Resultado</h2>
+    <iframe id="result"></iframe>
+
+    <script>
+        let generatedHTML = '';
+        let divCount = 1; // Contador de divs geradas
+
+        // Função para adicionar novos campos de bloco e destino
+        function addNewDiv() {
+            divCount++;
+            const dynamicFields = document.getElementById('dynamicFields');
+
+            // Criar novos campos de bloco
+            const newBlocoLabel = document.createElement('label');
+            newBlocoLabel.setAttribute('for', 'bloco' + divCount);
+            newBlocoLabel.textContent = 'Bloco ' + divCount;
+            
+            const newBlocoInput = document.createElement('input');
+            newBlocoInput.setAttribute('type', 'text');
+            newBlocoInput.setAttribute('id', 'bloco' + divCount);
+            newBlocoInput.setAttribute('name', 'bloco');
+            newBlocoInput.value = '';
+
+            // Criar novos campos de destino
+            const newDestinoLabel = document.createElement('label');
+            newDestinoLabel.setAttribute('for', 'destino' + divCount);
+            newDestinoLabel.textContent = 'Destino ' + divCount;
+            
+            const newDestinoInput = document.createElement('input');
+            newDestinoInput.setAttribute('type', 'text');
+            newDestinoInput.setAttribute('id', 'destino' + divCount);
+            newDestinoInput.setAttribute('name', 'destino');
+            newDestinoInput.value = '';
+
+            // Adicionar os novos elementos ao container
+            dynamicFields.appendChild(newBlocoLabel);
+            dynamicFields.appendChild(newBlocoInput);
+            dynamicFields.appendChild(document.createElement('br'));
+            dynamicFields.appendChild(document.createElement('br'));
+            dynamicFields.appendChild(newDestinoLabel);
+            dynamicFields.appendChild(newDestinoInput);
+            dynamicFields.appendChild(document.createElement('br'));
+            dynamicFields.appendChild(document.createElement('br'));
+        }
+
+        // Função para gerar o HTML
+        function generateHTML() {
+            const title = document.getElementById('title').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+
+            let bodyContent = '';
+            
+            for (let i = 1; i <= divCount; i++) {
+                const bloco = document.getElementById('bloco' + i).value;
+                const destino = document.getElementById('destino' + i).value;
+                bodyContent += `
+                <div class="bloco" onclick="window.location.href='${destino}'"><a>${bloco}</a></div>`;
+            }
+
+            generatedHTML = `
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            background-color: ${backgroundColor};
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .catalogo {
+            display: grid;
+            grid-template-columns: 1fr; /* Altera para uma coluna */
+            gap: 10px;
+            width: 100%; /* Garante que os blocos ocupem toda a largura */
+            max-width: 800px; /* Define um tamanho máximo para melhor visualização */
+        }
+        .bloco {
+            background-color: #1f1f1f;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .bloco:hover {
+            background-color: #333333;
+            transform: scale(1.05);
+        }
+        .bloco a {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Estilo para a seta de voltar */
+        .voltar {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #333333;
+            padding: 10px;
+            border-radius: 50%;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .voltar:hover {
+            background-color: #555555;
+            transform: scale(1.1);
+        }
+        .voltar a {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 20px;
+        }
+        .duvidas {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.duvidas-link {
+    display: inline-block;
+    background-color: #333333;
+    color: #ffffff;
+    padding: 15px; /* Ajuste o padding para o tamanho do círculo */
+    border-radius: 50%; /* Faz o círculo */
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    line-height: 1; /* Alinha verticalmente o texto */
+}
+
+.duvidas-link:hover {
+    background-color: #555555;
+    transform: scale(1.1);
+}
+    </style>
+    <title>Catálogo de Frases</title>
+</head>
+<body>
+
+<div class="catalogo">
+    ${bodyContent}
+</div>
+
+<!-- Seta de voltar -->
+<div class="voltar">
+    <a href="javascript:history.back()">&#8592;</a> <!-- Seta para esquerda -->
+</div>
+
+<div class="duvidas">
+    <a href="https://chatgpt.com/" class="duvidas-link">?</a>
+</div>
+
+</body>
+</html>`;
+
+            const iframe = document.getElementById('result');
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(generatedHTML);
+            iframe.contentDocument.close();
+        }
+
+        // Função para salvar o arquivo HTML gerado
+        function saveFile() {
+            if (!generatedHTML) {
+                alert('Por favor, gere o HTML primeiro.');
+                return;
+            }
+
+            const fileName = document.getElementById('fileName').value || 'pagina';
+            const blob = new Blob([generatedHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
